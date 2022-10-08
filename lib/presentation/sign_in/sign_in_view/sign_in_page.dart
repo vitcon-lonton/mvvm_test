@@ -68,11 +68,11 @@ class _SignInPageState extends State<SignInPage>
     }, invalid: () {
       _formKey.currentState?.validate();
     }, inProgress: () {
-      // showSnackbar('Waiting');
+      _formKey.currentState?.validate();
     }, success: () {
       showBanner('Success');
-      // viewModel.initial();
     }, failure: (AuthFailure failure) {
+      _formKey.currentState?.validate();
       showSnackbar(failure.when(
         unexpected: () => 'Unexpected',
         serverError: () => 'ServerError',

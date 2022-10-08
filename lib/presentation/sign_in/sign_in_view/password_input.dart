@@ -31,7 +31,9 @@ class PasswordInput extends StatelessWidget {
                 ),
               ),
               validator: (String? value) {
-                return password?.value.swap().toOption().toNullable()?.map(
+                return password == null
+                    ? 'Empty'
+                    : password.value.swap().toOption().toNullable()?.map(
                         exceedingLength: (_) => 'ExceedingLength',
                         notAchievedLength: (_) => 'NotAchievedLength',
                         empty: (_) => 'Empty',
@@ -39,8 +41,7 @@ class PasswordInput extends StatelessWidget {
                         multiline: (_) => 'Multiline',
                         listTooLong: (_) => 'ListTooLong',
                         invalidEmail: (_) => 'InvalidEmail',
-                        other: (_) => 'Other') ??
-                    'Empty';
+                        other: (_) => 'Other');
               },
               obscureText: !isDisplayPassword,
               onChanged: (String value) {

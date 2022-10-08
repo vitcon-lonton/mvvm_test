@@ -16,7 +16,9 @@ class EmailInput extends StatelessWidget {
           decoration: const InputDecoration(
               labelText: 'Email', alignLabelWithHint: true),
           validator: (String? value) {
-            return emailAddress?.value.swap().toOption().toNullable()?.map(
+            return emailAddress == null
+                ? 'Empty'
+                : emailAddress.value.swap().toOption().toNullable()?.map(
                     exceedingLength: (_) => 'ExceedingLength',
                     notAchievedLength: (_) => 'NotAchievedLength',
                     empty: (_) => 'Empty',
@@ -24,8 +26,7 @@ class EmailInput extends StatelessWidget {
                     multiline: (_) => 'Multiline',
                     listTooLong: (_) => 'ListTooLong',
                     invalidEmail: (_) => 'InvalidEmail',
-                    other: (_) => 'Other') ??
-                'Empty';
+                    other: (_) => 'Other');
           },
           onChanged: (String value) {
             viewModel.setEmailAddress(EmailAddress(value));
