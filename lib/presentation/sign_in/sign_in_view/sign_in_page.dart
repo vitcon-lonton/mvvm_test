@@ -71,7 +71,7 @@ class _SignInPageState extends State<SignInPage>
       // showSnackbar('Waiting');
     }, success: () {
       showBanner('Success');
-      viewModel.initial();
+      // viewModel.initial();
     }, failure: (AuthFailure failure) {
       showSnackbar(failure.when(
         unexpected: () => 'Unexpected',
