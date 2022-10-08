@@ -57,7 +57,7 @@ class SignInViewModel with ChangeNotifier {
     Password? password = _password.value;
 
     bool isEmailValid = emailAddress?.isValid() ?? false;
-    bool isPasswordValid = emailAddress?.isValid() ?? false;
+    bool isPasswordValid = password?.isValid() ?? false;
     bool isValid = isEmailValid && isPasswordValid;
 
     if (!isValid) {
