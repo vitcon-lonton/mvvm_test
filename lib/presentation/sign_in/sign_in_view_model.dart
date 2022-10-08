@@ -30,8 +30,8 @@ class SignInViewModel with ChangeNotifier {
 
   SignInViewModel(this._facade) {
     _status = BehaviorSubject<SignInViewModelStatus>();
-    _emailAddress = BehaviorSubject<EmailAddress>();
-    _password = BehaviorSubject<Password>();
+    _emailAddress = BehaviorSubject<EmailAddress?>();
+    _password = BehaviorSubject<Password?>();
     _displayPassword = BehaviorSubject<bool>();
   }
 
@@ -41,42 +41,35 @@ class SignInViewModel with ChangeNotifier {
   Stream<bool> get displayPassword => _displayPassword.stream;
 
   void setStatus(SignInViewModelStatus value) => _status.add(value);
-  void setEmailAddress(EmailAddress value) => _emailAddress.add(value);
-  void setPassword(Password value) => _password.add(value);
+  void setEmailAddress(EmailAddress? value) => _emailAddress.add(value);
+  void setPassword(Password? value) => _password.add(value);
   void setDisplayPassword(bool value) => _displayPassword.add(value);
 
   void initial() {
     setStatus(const SignInViewModelStatus.initial());
     setDisplayPassword(false);
-    setEmailAddress(EmailAddress(''));
-    setPassword(Password(''));
-    // setEmailAddress(EmailAddress('hello@example.com'));
-    // setPassword(Password('123456'));
-  }
-
-  bool validate() {
-    bool isEmailValid = _emailAddress.valueOrNull?.isValid() ?? false;
-    bool isPasswordValid = _password.valueOrNull?.isValid() ?? false;
-    bool isValid = isEmailValid && isPasswordValid;
-
-    setStatus(const SignInViewModelStatus.invalid());
-
-    return isValid;
+    setEmailAddress(null);
+    setPassword(null);
   }
 
   Future<void> submit() async {
-    bool isValid = validate();
+    EmailAddress? emailAddress = _emailAddress.value;
+    Password? password = _password.value;
 
-    if (isValid) {
+    bool isEmailValid = emailAddress?.isValid() ?? false;
+    bool isPasswordValid = emailAddress?.isValid() ?? false;
+    bool isValid = isEmailValid && isPasswordValid;
+
+    if (!isValid) {
+      setStatus(const SignInViewModelStatus.invalid());
+    } else {
       setStatus(const SignInViewModelStatus.inProgress());
-      await _loginResultSubscription?.cancel();
 
-      EmailAddress emailAddress = _emailAddress.value!;
-      Password password = _password.value!;
+      await _loginResultSubscription?.cancel();
 
       _loginResultSubscription = _facade
           .signInWithEmailAndPassword(
-              emailAddress: emailAddress, password: password)
+              emailAddress: emailAddress!, password: password!)
           .asStream()
           .listen((Either<AuthFailure, Unit> failureOrSuccess) {
         failureOrSuccess.fold((AuthFailure failure) {
